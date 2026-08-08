@@ -1,26 +1,172 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #F5F4FB;
+  --surface: #FFFFFF;
+  --surface-2: #ECEBF7;
+  --text: #1A1D2E;
+  --text-dim: #6B6D85;
+  --border: #E1E0F0;
+  --teal: #2BB88F;
+  --violet: #7C6AE8;
+  --rose: #E85D6B;
+  --user-bubble: #EDE9FE;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+[data-theme="dark"] {
+  --bg: #0B0E1A;
+  --surface: #151933;
+  --surface-2: #1E2242;
+  --text: #EDEEF7;
+  --text-dim: #8A8DA8;
+  --border: #262B4D;
+  --teal: #4CE0B3;
+  --violet: #8B7CF6;
+  --rose: #F97583;
+  --user-bubble: #2A2555;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+* { box-sizing: border-box; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+.font-display { font-family: 'Space Grotesk', sans-serif; }
+.font-mono { font-family: 'JetBrains Mono', monospace; }
+
+.aurora {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+}
+.aurora::before,
+.aurora::after {
+  content: "";
+  position: absolute;
+  width: 60vw;
+  height: 60vw;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.25;
+  animation: drift 22s ease-in-out infinite alternate;
+}
+.aurora::before {
+  background: var(--violet);
+  top: -20%;
+  left: -10%;
+}
+.aurora::after {
+  background: var(--teal);
+  bottom: -20%;
+  right: -10%;
+  animation-delay: -8s;
+}
+@keyframes drift {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(8%, 6%) scale(1.15); }
+}
+
+.orb {
+  border-radius: 50%;
+  background: conic-gradient(from 180deg, var(--teal), var(--violet), var(--teal));
+  position: relative;
+}
+.orb::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: inherit;
+  filter: blur(8px);
+  opacity: 0.6;
+  z-index: -1;
+}
+.orb-idle { animation: breathe 3.5s ease-in-out infinite; }
+.orb-thinking { animation: pulse-fast 0.9s ease-in-out infinite, spin 2s linear infinite; }
+.orb-speaking { animation: pulse-fast 0.5s ease-in-out infinite; }
+.orb-escalated {
+  background: conic-gradient(from 180deg, var(--rose), #ffb3ba, var(--rose));
+  animation: pulse-fast 0.7s ease-in-out infinite;
+}
+@keyframes breathe {
+  0%, 100% { transform: scale(1); opacity: 0.85; }
+  50% { transform: scale(1.12); opacity: 1; }
+}
+@keyframes pulse-fast {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.md-content p { margin: 0 0 0.5em 0; }
+.md-content p:last-child { margin-bottom: 0; }
+.md-content strong { color: var(--violet); font-weight: 600; }
+[data-theme="dark"] .md-content strong { color: var(--teal); }
+.md-content ul { margin: 0.4em 0; padding-left: 1.2em; }
+.md-content li { margin-bottom: 0.2em; }
+
+.chat-scroll::-webkit-scrollbar { width: 6px; }
+.chat-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+/* Glass surfaces */
+.glass {
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Ripple rings around the orb while it's active */
+.ripple-ring {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 1px solid var(--teal);
+  opacity: 0;
+}
+
+/* Input focus glow */
+.input-shell {
+  position: relative;
+  border-radius: 999px;
+}
+.input-shell::before {
+  content: "";
+  position: absolute;
+  inset: -1.5px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--teal), var(--violet));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+.input-shell:focus-within::before {
+  opacity: 1;
+}
+
+/* Suggested chip */
+.chip {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  transition: border-color 0.2s ease, transform 0.15s ease;
+}
+.chip:hover {
+  border-color: var(--teal);
+  transform: translateY(-1px);
+}
+
+/* Copy button */
+.copy-btn {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.msg-group:hover .copy-btn {
+  opacity: 1;
 }
