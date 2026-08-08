@@ -5,7 +5,7 @@ Retrieval-Augmented Generation (RAG), escalates unresolved issues to human
 agents, remembers conversation history, and supports multiple languages —
 built entirely on free-tier infrastructure.
 
-**Live demo:** [your-vercel-url-here]
+**Live demo:** https://ai-support-agent-p4y1.vercel.app/
 
 ![Support Signal screenshot](./docs-preview.png)
 
@@ -168,5 +168,3 @@ settings (same keys as `.env.local` above) before the first deploy.
 ## License
 
 MIT
-## CREATED BY 
-Mohamed Badis Hajji 
